@@ -1,6 +1,8 @@
 import http from 'node:http';
 import express from 'express';
 import cors from 'cors';
+import bcrypt from 'bcrypt'; 
+import jwt from 'jsonwebtoken';
 
 const app = express();
 app.use(express.json());
@@ -8,7 +10,7 @@ app.use(express.json());
 const corsOptions = {
   origin: '*', // Sostituisci con l'URL esatto del tuo frontend
   methods: 'GET,POST,PUT,DELETE',  // Metodi HTTP consentiti
-  allowedHeaders: ['Content-Type', 'Aux\thorization'], // Header accettati (fondamentale per i Token JWT!)
+  allowedHeaders: ['Content-Type', 'Authorization'], // Header accettati (fondamentale per i Token JWT!)
   optionsSuccessStatus: 200 
 };
 
@@ -25,7 +27,7 @@ const users = [
   { username: "elena_gialli", password: "passwordxyz", role: "user" }
 ];
 
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     users.push({ username, password: hashedPassword });
@@ -33,7 +35,7 @@ app.post('/register', async (req, res) => {
 });
 
 // 2. LOGIN (Generazione Token)
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     const user = users.find(u => u.username === username);
 
